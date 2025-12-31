@@ -31,10 +31,10 @@ const VideoList = ({
     const keyExtractor = useCallback((item: Video) => item.id, []);
 
     const ListFooterComponent = useCallback(() => {
-        if (!isLoading) return null;
         return (
             <View style={styles.footer}>
-                <ActivityIndicator size="large" color="#FF0000" />
+                {isLoading && <ActivityIndicator size="large" color="#FF0000" style={styles.loader} />}
+                <Text style={styles.footerText}>@FranceMemeL</Text>
             </View>
         );
     }, [isLoading]);
@@ -92,6 +92,14 @@ const styles = StyleSheet.create({
     emptyText: {
         color: '#0B2C5B',
         fontSize: 16,
+    },
+    loader: {
+        marginBottom: 10,
+    },
+    footerText: {
+        color: '#2196F3',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
 

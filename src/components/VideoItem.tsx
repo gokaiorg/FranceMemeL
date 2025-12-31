@@ -2,6 +2,7 @@ import React, { memo, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Video } from '../types';
 import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 interface VideoItemProps {
     video: Video;
@@ -9,11 +10,23 @@ interface VideoItemProps {
     onPress: (id: string) => void;
 }
 
+const decodeHtmlEntities = (text: string) => {
+    return text
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&#x27;/g, "'");
+};
+
 const VideoItem = memo(({ video, index, onPress }: VideoItemProps) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
-    const formattedDate = format(new Date(video.publishedAt), 'PPP');
-    const accessibilityLabel = `Video ${index + 1}: ${video.title}. Published on ${formattedDate}`;
+    const rawDate = format(new Date(video.publishedAt), 'd MMMM yyyy', { locale: fr });
+    const formattedDate = rawDate.replace(/ [a-z]/, (letter) => letter.toUpperCase());
+    const title = decodeHtmlEntities(video.title);
+    const accessibilityLabel = `Video ${index + 1}: ${title}. Published on ${formattedDate}`;
 
     const handlePress = () => {
         if (Platform.OS === 'web') {
@@ -38,7 +51,7 @@ const VideoItem = memo(({ video, index, onPress }: VideoItemProps) => {
                             width="100%"
                             height="100%"
                             src={`https://www.youtube.com/embed/${video.id}?autoplay=1`}
-                            title={video.title}
+                            title={title}
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
@@ -47,7 +60,7 @@ const VideoItem = memo(({ video, index, onPress }: VideoItemProps) => {
                     </View>
                     <View style={styles.infoContainer}>
                         <Text style={styles.title} numberOfLines={2}>
-                            {video.title}
+                            {title}
                         </Text>
                         <Text style={styles.date}>{formattedDate}</Text>
                     </View>
@@ -91,7 +104,7 @@ const VideoItem = memo(({ video, index, onPress }: VideoItemProps) => {
                 </View>
                 <View style={styles.infoContainer}>
                     <Text style={styles.title} numberOfLines={2}>
-                        {video.title}
+                        {title}
                     </Text>
                     <View style={styles.metaContainer}>
                         <Text style={styles.date}>{formattedDate}</Text>
