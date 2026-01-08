@@ -62,7 +62,6 @@ const VideoList = ({
                 ListFooterComponent={ListFooterComponent}
                 ListEmptyComponent={ListEmptyComponent}
                 contentContainerStyle={styles.listContent}
-                accessibilityRole="list"
                 accessibilityLabel="Video List"
             />
         </View>

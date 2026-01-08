@@ -36,85 +36,80 @@ const VideoItem = memo(({ video, index, onPress }: VideoItemProps) => {
         }
     };
 
-    const Wrapper = ({ children }: { children: React.ReactNode }) => (
-        <View style={styles.listItemWrapper}>
-            {children}
-        </View>
-    );
+    const containerStyle = [
+        styles.container,
+        styles.listItemWrapper
+    ];
 
     if (isPlaying && Platform.OS === 'web') {
         return (
-            <Wrapper>
-                <View style={styles.container}>
-                    <View style={styles.videoContainer}>
-                        <iframe
-                            width="100%"
-                            height="100%"
-                            src={`https://www.youtube.com/embed/${video.id}?autoplay=1`}
-                            title={title}
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                            style={{ border: 'none' }}
-                        />
-                    </View>
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.title} numberOfLines={2}>
-                            {title}
-                        </Text>
-                        <Text style={styles.date}>{formattedDate}</Text>
-                    </View>
-                </View>
-            </Wrapper>
-        );
-    }
-
-    return (
-        <Wrapper>
-            {/* @ts-ignore - onMouseEnter/onMouseLeave are web-only but work in RN Web */}
-            <TouchableOpacity
-                {...({
-                    activeOpacity: 0.8,
-                    onPress: handlePress,
-                    onMouseEnter: () => Platform.OS === 'web' && setIsHovered(true),
-                    onMouseLeave: () => Platform.OS === 'web' && setIsHovered(false),
-                } as any)}
-                style={[
-                    styles.container,
-                    isHovered && styles.containerHover
-                ]}
-                accessible={true}
-                accessibilityRole="button"
-                accessibilityLabel={accessibilityLabel}
-            >
-                <View style={styles.thumbnailContainer}>
-                    <Image
-                        source={{ uri: video.thumbnailUrl }}
-                        style={styles.thumbnail}
-                        resizeMode="cover"
+            // @ts-ignore - 'article' is a valid web role but strict types might miss it
+            <View style={containerStyle} accessibilityRole="article">
+                <View style={styles.videoContainer}>
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        src={`https://www.youtube.com/embed/${video.id}?autoplay=1`}
+                        title={title}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        style={{ border: 'none' }}
                     />
-                    <View style={[
-                        styles.playIconContainer,
-                        isHovered && styles.playIconContainerHover
-                    ]}>
-                        <View style={styles.playIcon}>
-                            <View style={styles.playTriangle} />
-                        </View>
-                    </View>
                 </View>
                 <View style={styles.infoContainer}>
                     <Text style={styles.title} numberOfLines={2}>
                         {title}
                     </Text>
-                    <View style={styles.metaContainer}>
-                        <Text style={styles.date}>{formattedDate}</Text>
-                        <View style={styles.badge}>
-                            <Text style={styles.badgeText}>MÈME</Text>
-                        </View>
+                    <Text style={styles.date}>{formattedDate}</Text>
+                </View>
+            </View>
+        );
+    }
+
+    return (
+        <TouchableOpacity
+            {...({
+                activeOpacity: 0.8,
+                onPress: handlePress,
+                onMouseEnter: () => Platform.OS === 'web' && setIsHovered(true),
+                onMouseLeave: () => Platform.OS === 'web' && setIsHovered(false),
+            } as any)}
+            style={[
+                containerStyle,
+                isHovered && styles.containerHover
+            ]}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={accessibilityLabel}
+        >
+            <View style={styles.thumbnailContainer}>
+                <Image
+                    source={{ uri: video.thumbnailUrl }}
+                    style={styles.thumbnail}
+                    resizeMode="cover"
+                />
+                <View style={[
+                    styles.playIconContainer,
+                    isHovered && styles.playIconContainerHover
+                ]}>
+                    <View style={styles.playIcon}>
+                        <View style={styles.playTriangle} />
                     </View>
                 </View>
-            </TouchableOpacity>
-        </Wrapper>
+            </View>
+            <View style={styles.infoContainer}>
+                <Text style={styles.title} numberOfLines={2}>
+                    {title}
+                </Text>
+                <View style={styles.metaContainer}>
+                    <Text style={styles.date}>{formattedDate}</Text>
+                    <View style={styles.badge}>
+                        <Text style={styles.badgeText}>MÈME</Text>
+                    </View>
+                </View>
+            </View>
+        </TouchableOpacity>
     );
 });
 
