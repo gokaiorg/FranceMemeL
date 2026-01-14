@@ -23,6 +23,7 @@ const decodeHtmlEntities = (text: string) => {
 const VideoItem = memo(({ video, index, onPress }: VideoItemProps) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
     const rawDate = format(new Date(video.publishedAt), 'd MMMM yyyy', { locale: fr });
     const formattedDate = rawDate.replace(/ [a-z]/, (letter) => letter.toUpperCase());
     const title = decodeHtmlEntities(video.title);
@@ -74,10 +75,12 @@ const VideoItem = memo(({ video, index, onPress }: VideoItemProps) => {
                 onPress: handlePress,
                 onMouseEnter: () => Platform.OS === 'web' && setIsHovered(true),
                 onMouseLeave: () => Platform.OS === 'web' && setIsHovered(false),
+                onFocus: () => Platform.OS === 'web' && setIsFocused(true),
+                onBlur: () => Platform.OS === 'web' && setIsFocused(false),
             } as any)}
             style={[
                 containerStyle,
-                isHovered && styles.containerHover
+                (isHovered || isFocused) && styles.containerHover
             ]}
             accessible={true}
             accessibilityRole="button"
@@ -88,6 +91,7 @@ const VideoItem = memo(({ video, index, onPress }: VideoItemProps) => {
                     source={{ uri: video.thumbnailUrl }}
                     style={styles.thumbnail}
                     resizeMode="cover"
+                    accessibilityRole="none"
                 />
                 <View style={[
                     styles.playIconContainer,
