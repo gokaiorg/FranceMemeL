@@ -3,7 +3,7 @@ import { Video, YouTubeApiResponse, YouTubeVideoItem } from '../types';
 
 // NOTE: In a real app, use react-native-config or similar.
 // Ensure you have a valid key in your environment.
-const API_KEY = process.env.YOUTUBE_API_KEY || 'AIzaSyBfZ7TpIAuL-beyV8tNmu938HJVV8v_1e4';
+const API_KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL_ID = 'UCocL2wWxYJAYbrWMNgvRYfA'; // FranceMemeL channel ID
 
 const BASE_URL = 'https://www.googleapis.com/youtube/v3';
@@ -17,9 +17,8 @@ const MOCK_VIDEOS: Video[] = Array.from({ length: 20 }).map((_, i) => ({
 }));
 
 export const fetchVideos = async (pageToken?: string): Promise<{ videos: Video[]; nextPageToken?: string }> => {
-    // If API KEY is explicitly technically "missing" or the default placeholder from original code (not likely now), use mock.
-    // Keeping the check just in case, but currently we have a valid key.
-    if (API_KEY === 'YOUR_API_KEY_HERE') {
+    // If API KEY is missing, use mock.
+    if (!API_KEY || API_KEY === 'YOUR_API_KEY_HERE') {
         console.warn('No API Key provided, returning mock data.');
         // Simulate delay
         await new Promise(resolve => setTimeout(resolve, 1000));
